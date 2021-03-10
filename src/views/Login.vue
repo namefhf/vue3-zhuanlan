@@ -53,10 +53,15 @@ export default {
           email: emailVal.value,
           password: passwordVal.value
         }
-        store.dispatch('login', payload).then(res => {
-          console.log(res)
-          router.push({ name: 'home' })
-        })
+        store
+          .dispatch('loginAndFetch', payload)
+          .then(res => {
+            console.log(res)
+            router.push({ name: 'home' })
+          })
+          .catch(e => {
+            console.log(e)
+          })
       }
     }
     return {

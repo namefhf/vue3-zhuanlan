@@ -35,7 +35,7 @@
       <!-- 已登录 -->
       <ul v-else class="list-inline mb-0">
         <li class="list-inline-item">
-          <Dropdown :title="`你好${user.name}`">
+          <Dropdown :title="`你好${user.nickName}`">
             <DropdownItem>
               <router-link :to="{ name: 'create' }" class="dropdown-item">
                 新建文章
@@ -45,7 +45,13 @@
               <a href="" class="dropdown-item">编辑资料</a>
             </DropdownItem>
             <DropdownItem>
-              <a href="" class="dropdown-item">退出登录</a>
+              <a
+                href=""
+                class="dropdown-item"
+                @click.prevent="$store.commit('logout')"
+              >
+                退出登录
+              </a>
             </DropdownItem>
           </Dropdown>
         </li>
