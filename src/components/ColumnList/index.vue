@@ -1,19 +1,25 @@
 <template>
   <div class="row">
-    <div v-for="column in columnlist" :key="column.id" class="col-md-4 mb-4">
-      <div class="card shadow-sm" style="width: 100%;">
+    <div v-for="column in columnlist" :key="column._id" class="col-md-4 mb-4">
+      <div class="card shadow-sm h-100 " style="width: 100%;">
         <div class="card-body text-center">
           <img
-            :src="column.avatar"
-            class="rounded-circle border border-light w-25 my-3"
+            :src="column.avatar && column.avatar.url"
+            class="rounded-circle border border-light my-3"
             alt="..."
+            width="50"
+            height="50"
           />
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text text-left">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+          <h5 class="card-title text-truncate">{{ column.title }}</h5>
+          <p class="card-text text-left description text-secondary ">
+            {{ column.description }}
           </p>
-          <a href="#" class="btn btn-outline-primary">Go somewhere</a>
+          <router-link
+            :to="{ name: 'column', params: { id: column._id } }"
+            class="btn btn-outline-primary"
+          >
+            进入专栏
+          </router-link>
         </div>
       </div>
     </div>
@@ -34,7 +40,11 @@ export default {
     const columnlist = computed(() => {
       return props.list.map(column => {
         if (!column.avatar) {
-          column.avatar = require('../../assets/column.jpg')
+          column.avatar = {
+            url: require('../../assets/column.jpg')
+          }
+        } else {
+          column.avatar.url += '?x-oss-process=image/resize,m_pad,h_50,w_50'
         }
         return column
       })
@@ -46,4 +56,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

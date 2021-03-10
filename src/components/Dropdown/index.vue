@@ -7,7 +7,12 @@
       {{ title }}
     </a>
 
-    <ul class="dropdown-menu" :style="{ display: 'block' }" v-if="isOpen">
+    <ul
+      class="dropdown-menu"
+      :style="{ display: 'block' }"
+      v-if="isOpen"
+      @click.prevent="toggleOpen"
+    >
       <slot></slot>
     </ul>
   </div>

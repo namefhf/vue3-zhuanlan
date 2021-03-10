@@ -10,20 +10,29 @@
 </template>
 
 <script>
+import mitt from 'mitt'
+import { onUnmounted } from 'vue'
+export const emitter = mitt()
 export default {
   name: 'ValideForm',
   emits: ['form-submit'],
   setup(props, { emit }) {
+    let funcArr = [] //验证函数
     const sumitForm = () => {
-      emit('form-submit', true)
+      const result = funcArr.map(func => func()).every(result => result)
+      emit('form-submit', result)
     }
-
+    const callback = func => {
+      funcArr.push(func)
+    }
+    emitter.on('form-item-created', callback)
+    onUnmounted(() => {
+      emitter.off('form-item-created', callback)
+      funcArr = []
+    })
     return {
       sumitForm
     }
-  },
-  mounted() {
-    this.$on('item-created', () => {})
   }
 }
 </script>

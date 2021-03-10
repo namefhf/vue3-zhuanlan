@@ -1,8 +1,16 @@
 <template>
   <div class="validate-input-container pb-3">
-    <input type="text" :value="inputRef.val" @blur="validateInput"
+    <input v-if="tag!=='textarea'" :value="inputRef.val" @blur="validateInput"
     @input="updateValue" class="form-control" :="$attrs" :class="{ 'is-invalid':
     inputRef.err }" />
+    <textarea
+      v-else
+      class="form-control"
+      :class="{ 'is-invalid': inputRef.error }"
+      @blur="validateInput"
+      v-model="inputRef.val"
+      v-bind="$attrs"
+    ></textarea>
     <span v-if="inputRef.err" class="invalid-feedback">
       {{ inputRef.message }}
     </span>
@@ -10,13 +18,17 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
+import { emitter } from '../ValidateForm'
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 export default {
   name: 'ValidateInput',
   props: {
     rules: {
       type: Array
+    },
+    tag: {
+      type: String
     },
     modelValue: String
   },
@@ -53,6 +65,9 @@ export default {
       }
       return true
     }
+    onMounted(() => {
+      emitter.emit('form-item-created', validateInput)
+    })
     return {
       inputRef,
       updateValue,
