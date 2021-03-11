@@ -17,7 +17,9 @@
             随心写作，自由表达
           </h2>
           <p>
-            <a href="#" class="btn btn-primary my-2">开始写文章</a>
+            <router-link :to="{ name: 'create' }" class="btn btn-primary my-2">
+              开始写文章
+            </router-link>
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 <template>
   <Loader text="拼命加载中" v-if="isLoading" />
+  <!-- <Message type="error" :message="error.message" v-if="error.status" /> -->
   <GlobalHeader :user="currentUser" />
 
   <div class="container">
@@ -8,15 +9,20 @@
 </template>
 
 <script>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import Loader from '@/components/Loader'
 import GlobalHeader from './components/GlobalHeader'
 import axios from 'axios'
+import Message from '@/components/Message'
+import CreateMessage from '@/components/CreateMessage'
+import createMessage from '@/components/CreateMessage'
 export default {
   components: {
     GlobalHeader,
-    Loader
+    Loader,
+    Message,
+    CreateMessage
   },
   setup() {
     const store = useStore()
@@ -32,13 +38,15 @@ export default {
     const error = computed(() => {
       return store.state.error
     })
-    onMounted(() => {
-      console.log('app mounted')
-      if (!currentUser.value.isLogin && token.value) {
-        axios.defaults.headers.Authorization = `Bearer ${token.value}`
-        store.dispatch('fetchCurrentUser')
+    watch(
+      () => error.value.status,
+      () => {
+        const { status, message } = error.value
+        if (status && message) {
+          createMessage(message, 'error')
+        }
       }
-    })
+    )
     return {
       currentUser,
       isLoading,

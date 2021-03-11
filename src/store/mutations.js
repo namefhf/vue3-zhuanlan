@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { arrToObj, objToArr } from '../helper'
 const mutations = {
   // login (state) {
   //     state.user = { ...state.user, isLogin: true, name: 'mike' }
@@ -23,13 +23,28 @@ const mutations = {
   },
   logout(state) {
     localStorage.removeItem('token')
+    state.token = ''
     state.user.isLogin = false
+    delete axios.defaults.headers.common.Authorization
   },
   fetchCurrentUser(state, rowData) {
     state.user = { ...state.user, isLogin: true, ...rowData.data }
   },
   setError(state, e) {
     state.error = e
+  },
+  fetchPosts(state, { data: rawData, extraData: columnId }) {
+    state.posts.data = { ...state.posts.data, ...arrToObj(rawData.data.list) }
+    state.posts.loadedColumns.push(columnId)
+  },
+  fetchPost(state, rawData) {
+    state.posts.data[rawData.data._id] = rawData.data
+  },
+  deletePost(state, { data }) {
+    delete state.posts.data[data._id]
+  },
+  updatePost(state, { data }) {
+    state.posts.data[data._id] = data
   }
 }
 export default mutations

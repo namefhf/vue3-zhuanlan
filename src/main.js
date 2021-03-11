@@ -10,6 +10,7 @@ axios.defaults.baseURL =
 // console.log(process.env.NODE_ENV);
 axios.interceptors.request.use(config => {
   store.commit('setLoading', true)
+  store.commit('setError', { status: false, message: '' })
   return config
 })
 axios.interceptors.response.use(
@@ -20,7 +21,7 @@ axios.interceptors.response.use(
   err => {
     // console.log(err.response)
     const { error } = err.response.data
-    store.commit('setError', { status: true, message: 'error' })
+    store.commit('setError', { status: true, message: error })
     store.commit('setLoading', false)
     return Promise.reject(error)
   }

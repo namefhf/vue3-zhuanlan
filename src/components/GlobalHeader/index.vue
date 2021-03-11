@@ -45,11 +45,7 @@
               <a href="" class="dropdown-item">编辑资料</a>
             </DropdownItem>
             <DropdownItem>
-              <a
-                href=""
-                class="dropdown-item"
-                @click.prevent="$store.commit('logout')"
-              >
+              <a href="" class="dropdown-item" @click.prevent="logout">
                 退出登录
               </a>
             </DropdownItem>
@@ -61,8 +57,10 @@
 </template>
 
 <script>
+import { useStore } from 'vuex'
 import Dropdown from '../Dropdown'
 import DropdownItem from '../DropdownItem'
+import { useRouter } from 'vue-router'
 export default {
   name: 'GlobalHeader',
   components: {
@@ -76,7 +74,15 @@ export default {
     }
   },
   setup() {
-    return {}
+    const store = useStore()
+    const router = useRouter()
+    const logout = () => {
+      store.commit('logout')
+      router.push('/')
+    }
+    return {
+      logout
+    }
   }
 }
 </script>

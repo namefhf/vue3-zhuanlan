@@ -31,6 +31,42 @@ const actions = {
     return dispatch('login', loginData).then(() => {
       return dispatch('fetchCurrentUser')
     })
+  },
+  fetchPosts({ state, commit }, cid) {
+    if (!state.posts.loadedColumns.includes(cid)) {
+      return asyncAndCommit(
+        `/columns/${cid}/posts`,
+        'fetchPosts',
+        commit,
+        { method: 'get' },
+        cid
+      )
+    }
+  },
+  fetchPost({ state, commit }, id) {
+    const currentPost = state.posts.data[id]
+    if (!currentPost || !currentPost.content) {
+      return asyncAndCommit(`/posts/${id}`, 'fetchPost', commit)
+    } else {
+      return Promise.resolve({ data: currentPost })
+    }
+  },
+  updatePost({ commit }, { id, payload }) {
+    return asyncAndCommit(`/posts/${id}`, 'updatePost', commit, {
+      method: 'patch',
+      data: payload
+    })
+  },
+  // createPost({ commit }, payload) {
+  //   return asyncAndCommit('/posts', 'createPost', commit, {
+  //     method: 'post',
+  //     data: payload
+  //   })
+  // },
+  deletePost({ commit }, id) {
+    return asyncAndCommit(`/posts/${id}`, 'deletePost', commit, {
+      method: 'delete'
+    })
   }
 }
 export default actions
